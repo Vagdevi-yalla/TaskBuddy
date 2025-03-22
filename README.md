@@ -21,16 +21,14 @@ A modern task management application built with React, TypeScript, and Firebase.
 - Vite
 - Tailwind CSS
 - Firebase (Authentication, Firestore, Storage)
-- React Query
 - React Router
-- Headless UI
 - Heroicons
 
 ## Getting Started
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/taskbuddy.git
+git clone https://github.com/Vagdevi-yalla/taskbuddy.git
 cd taskbuddy
 ```
 
@@ -81,7 +79,3 @@ src/
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
