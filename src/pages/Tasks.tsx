@@ -3,8 +3,8 @@ import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchUserTasks, deleteTask, updateTaskStatus, updateTaskOrders } from '../services/taskService';
 import { Task, TaskStatus } from '../types/Task';
-import TaskForm from '../components/TaskForm';
 import AddTaskModal from '../components/tasks/AddTaskModal';
+import EditTaskModal from '../components/EditTaskModal';
 import TaskHeader from '../components/tasks/TaskHeader';
 import TaskFilters from '../components/tasks/TaskFilters';
 import TaskList from '../components/tasks/TaskList';
@@ -73,11 +73,11 @@ export default function Tasks() {
 
   const handleEditTask = (task: Task) => {
     setEditingTask(task);
-    setShowAddTask(true);
   };
 
   const handleTaskAdded = async () => {
     console.log('Task added, refreshing task list');
+    setShowAddTask(false);
     setEditingTask(null);
     await loadTasks();
   };
@@ -236,22 +236,20 @@ export default function Tasks() {
 
         {showAddTask && !editingTask && (
           <AddTaskModal
-            onClose={() => {
-              setShowAddTask(false);
-              setEditingTask(null);
-            }}
+            onClose={() => setShowAddTask(false)}
             onTaskAdded={handleTaskAdded}
           />
         )}
 
         {editingTask && (
-          <TaskForm
+          <EditTaskModal
+            isOpen={true}
             onClose={() => {
-              setShowAddTask(false);
               setEditingTask(null);
+              setShowAddTask(false);
             }}
-            onTaskAdded={handleTaskAdded}
-            editingTask={editingTask}
+            task={editingTask}
+            onTaskUpdated={handleTaskAdded}
           />
         )}
 

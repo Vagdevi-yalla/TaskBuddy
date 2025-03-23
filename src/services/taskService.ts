@@ -44,9 +44,20 @@ setInterval(() => {
 // Add a type converter to handle Firestore document conversion
 const taskConverter: FirestoreDataConverter<Task> = {
   toFirestore(task: Task): DocumentData {
-    const { id, ...taskData } = task;
+    const { id, attachments, ...taskData } = task;
+    // Convert File objects to storable format
+    const attachmentData = attachments?.map(file => ({
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      lastModified: file.lastModified,
+      // Add any additional metadata you want to store
+      path: file.name, // You might want to store the actual file path if you're using storage
+      uploadedAt: new Date().toISOString()
+    }));
     return {
       ...taskData,
+      attachments: attachmentData || [],
       updatedAt: serverTimestamp()
     };
   },
@@ -63,7 +74,9 @@ const taskConverter: FirestoreDataConverter<Task> = {
       createdAt: data.createdAt?.toDate() || new Date(),
       updatedAt: data.updatedAt?.toDate() || new Date(),
       completed: data.completed || false,
-      description: data.description || ''
+      description: data.description || '',
+      activityLog: data.activityLog || [],
+      attachments: data.attachments || [] // This will now be an array of attachment metadata
     };
   }
 };
@@ -140,10 +153,11 @@ export const addTask = async (
   userId: string,
   status: TaskStatus = 'TO-DO',
   order?: number,
-  description: string = ''
+  description: string = '',
+  attachments: File[] = []
 ): Promise<string> => {
   try {
-    console.log('Adding task with data:', { title, dueDate, category, userId, status, description });
+    console.log('Adding task with data:', { title, dueDate, category, userId, status, description, attachments });
     
     // Get the current highest order number
     const q = query(
@@ -158,6 +172,16 @@ export const addTask = async (
     const highestOrder = querySnapshot.docs[0]?.data()?.order ?? -1;
     console.log('Current highest order:', highestOrder);
 
+    // Convert File objects to TaskAttachment format
+    const attachmentData = attachments.map(file => ({
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      lastModified: file.lastModified,
+      path: file.name,
+      uploadedAt: new Date().toISOString()
+    }));
+
     const newTask: Omit<Task, 'id' | 'createdAt' | 'updatedAt'> = {
       title,
       dueDate,
@@ -166,7 +190,12 @@ export const addTask = async (
       userId,
       completed: status === 'COMPLETED',
       order: order ?? highestOrder + 1,
-      description
+      description,
+      attachments: attachmentData,
+      activityLog: [{
+        action: 'Task created',
+        timestamp: new Date()
+      }]
     };
 
     const docRef = await addDoc(tasksCollection, {
@@ -286,7 +315,9 @@ export const updateTask = async (
   updates: Partial<Task>
 ): Promise<void> => {
   try {
-    const taskRef = doc(db, COLLECTION_NAME, taskId);
+    const taskRef = doc(db, COLLECTION_NAME, taskId).withConverter(taskConverter);
+    
+    // Ensure we're using the converter to handle the data transformation
     await updateDoc(taskRef, {
       ...updates,
       updatedAt: serverTimestamp()

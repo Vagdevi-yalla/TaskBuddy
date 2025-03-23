@@ -24,16 +24,36 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
-  const contentEditableRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLDivElement>(null);
   const [activeFormats, setActiveFormats] = useState<Set<string>>(new Set());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
 
+    if (!title.trim()) {
+      setError('Title is required');
+      return;
+    }
+
+    if (!dueDate) {
+      setError('Due date is required');
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-      await addTask(title, dueDate, category, user.uid, status, undefined, description);
+      setError('');
+      await addTask(
+        title,
+        dueDate,
+        category,
+        user.uid,
+        status,
+        undefined,
+        description,
+        files
+      );
       onTaskAdded();
       onClose();
     } catch (error) {
@@ -44,13 +64,19 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
     }
   };
 
-  const handleDescriptionChange = () => {
-    if (contentEditableRef.current) {
-      const text = contentEditableRef.current.innerText;
-      if (text.length <= 300) {
-        setDescription(contentEditableRef.current.innerHTML);
-        setCharCount(text.length);
-      }
+  useEffect(() => {
+    // Initialize the contentEditable div with initial content
+    if (textareaRef.current) {
+      textareaRef.current.innerHTML = description;
+    }
+  }, []);
+
+  const handleDescriptionChange = (e: React.FormEvent<HTMLDivElement>) => {
+    const text = e.currentTarget.textContent || '';
+    const html = e.currentTarget.innerHTML;
+    if (text.length <= 300) {
+      setDescription(html);
+      setCharCount(text.length);
     }
   };
 
@@ -62,58 +88,96 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
     setFiles(droppedFiles);
   };
 
-  const insertFormatting = (format: string) => {
-    if (!contentEditableRef.current) return;
-    const selection = window.getSelection();
-    const range = selection?.getRangeAt(0);
-    if (!selection || !range) return;
-
-    // Save the current selection
-    const selectedText = range.toString();
+  const handleFormatting = (format: string) => {
+    const div = textareaRef.current;
+    if (!div) return;
     
-    // Create the formatted element
-    const formattedElement = document.createElement('span');
+    div.focus();
+    
+    // Get or create selection
+    const selection = window.getSelection();
+    if (!selection) return;
+    
+    // If no selection exists, create one at cursor position
+    if (selection.rangeCount === 0) {
+      const range = document.createRange();
+      range.selectNodeContents(div);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+    
+    // Get the current range
+    const range = selection.getRangeAt(0);
+    
+    // If no text is selected, select the current line
+    if (selection.toString().trim() === '') {
+      let node = selection.anchorNode;
+      if (node?.nodeType === Node.TEXT_NODE && node.parentNode) {
+        node = node.parentNode;
+      }
+      
+      // Find the closest block-level element
+      let blockElement = node;
+      while (blockElement && blockElement !== div && !['P', 'DIV', 'LI'].includes(blockElement.nodeName)) {
+        blockElement = blockElement.parentNode;
+      }
+      
+      if (blockElement && blockElement !== div) {
+        range.selectNodeContents(blockElement);
+      }
+    }
+    
     switch (format) {
       case 'bold':
-        formattedElement.style.fontWeight = 'bold';
+        document.execCommand('bold', false);
         break;
       case 'italic':
-        formattedElement.style.fontStyle = 'italic';
+        document.execCommand('italic', false);
         break;
       case 'strike':
-        formattedElement.style.textDecoration = 'line-through';
+        document.execCommand('strikeThrough', false);
         break;
       case 'bullet':
-        // Insert bullet point at the start of each line
-        const lines = selectedText.split('\n');
-        const bulletedText = lines.map(line => `• ${line}`).join('\n');
-        formattedElement.textContent = bulletedText;
+        const parentList = range.commonAncestorContainer.parentElement?.closest('ul, ol');
+        if (!parentList) {
+          // Not in a list, create new unordered list
+          document.execCommand('insertUnorderedList', false);
+        } else if (parentList.tagName === 'OL') {
+          // Convert ordered list to unordered
+          const listItems = Array.from(parentList.children);
+          const newList = document.createElement('ul');
+          listItems.forEach(li => newList.appendChild(li.cloneNode(true)));
+          parentList.replaceWith(newList);
+        } else {
+          // Toggle existing unordered list
+          document.execCommand('insertUnorderedList', false);
+        }
         break;
       case 'number':
-        // Insert numbers at the start of each line
-        const numberedLines = selectedText.split('\n');
-        const numberedText = numberedLines.map((line, i) => `${i + 1}. ${line}`).join('\n');
-        formattedElement.textContent = numberedText;
+        const parentOList = range.commonAncestorContainer.parentElement?.closest('ul, ol');
+        if (!parentOList) {
+          // Not in a list, create new ordered list
+          document.execCommand('insertOrderedList', false);
+        } else if (parentOList.tagName === 'UL') {
+          // Convert unordered list to ordered
+          const listItems = Array.from(parentOList.children);
+          const newList = document.createElement('ol');
+          listItems.forEach(li => newList.appendChild(li.cloneNode(true)));
+          parentOList.replaceWith(newList);
+        } else {
+          // Toggle existing ordered list
+          document.execCommand('insertOrderedList', false);
+        }
         break;
     }
-
-    if (format === 'bullet' || format === 'number') {
-      // For lists, replace the content
-      range.deleteContents();
-      range.insertNode(formattedElement);
-    } else {
-      // For inline formatting, wrap the selection
-      formattedElement.textContent = selectedText;
-      range.deleteContents();
-      range.insertNode(formattedElement);
-    }
-
-    // Update the description state
-    handleDescriptionChange();
+    
+    // Update description state with HTML content
+    setDescription(div.innerHTML);
+    setCharCount(div.textContent?.length || 0);
   };
 
   const checkActiveFormats = () => {
-    if (!contentEditableRef.current) return;
+    if (!textareaRef.current) return;
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
 
@@ -152,11 +216,11 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4">
-        <div className="flex justify-between items-center px-6 py-4">
-          <h3 className="text-lg font-medium text-gray-900">Create Task</h3>
+        <div className="flex justify-between items-center px-6 py-6 border-b-2 border-[#f1f1f1]">
+          <h3 className="text-xl font-semibold text-gray-900 ">Create Task</h3>
           <button 
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-500 text-2xl font-light"
+            className="text-black hover:text-gray-700 text-3xl font-bold"
           >
             ×
           </button>
@@ -184,64 +248,53 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
                 </div>
               </div>
               <div
-                ref={contentEditableRef}
+                ref={textareaRef}
                 contentEditable
                 onInput={handleDescriptionChange}
-                className="w-full px-3 py-2 text-sm focus:outline-none min-h-[100px] overflow-auto"
-                style={{ whiteSpace: 'pre-wrap' }}
+                className="w-full px-3 py-2 text-sm focus:outline-none min-h-[100px] overflow-auto empty:before:content-[attr(data-placeholder)] empty:before:text-gray-400"
+                style={{ resize: 'none' }}
+                data-placeholder="Add a description..."
               />
               <div className="flex items-center gap-2 px-3 py-2">
                 <button 
                   type="button"
-                  onClick={() => insertFormatting('bold')}
-                  className={`p-1 rounded transition-colors min-w-[24px] font-medium ${
-                    activeFormats.has('bold') 
-                      ? 'bg-gray-200 text-[#7B1984]' 
-                      : 'hover:bg-gray-100 text-gray-700'
-                  }`}
+                  onClick={() => handleFormatting('bold')}
+                  className="p-1 rounded transition-colors min-w-[24px] font-medium hover:bg-gray-100 text-gray-700"
                   title="Bold"
                 >
-                  B
+                  <img src={Icons.bold} alt="bold" className="w-4 h-4" />
                 </button>
                 <button 
                   type="button"
-                  onClick={() => insertFormatting('italic')}
-                  className={`p-1 rounded transition-colors min-w-[24px] italic ${
-                    activeFormats.has('italic') 
-                      ? 'bg-gray-200 text-[#7B1984]' 
-                      : 'hover:bg-gray-100 text-gray-700'
-                  }`}
+                  onClick={() => handleFormatting('italic')}
+                  className="p-1 rounded transition-colors min-w-[24px] italic hover:bg-gray-100 text-gray-700"
                   title="Italic"
                 >
-                  I
+                  <img src={Icons.italic} alt="italic" className="w-4 h-4" />
                 </button>
                 <button 
                   type="button"
-                  onClick={() => insertFormatting('strike')}
-                  className={`p-1 rounded transition-colors min-w-[24px] ${
-                    activeFormats.has('strike') 
-                      ? 'bg-gray-200 text-[#7B1984]' 
-                      : 'hover:bg-gray-100 text-gray-700'
-                  }`}
+                  onClick={() => handleFormatting('strike')}
+                  className="p-1 rounded transition-colors min-w-[24px] hover:bg-gray-100 text-gray-700"
                   title="Strike"
                 >
-                  S
+                  <img src={Icons.strike} alt="strike" className="w-4 h-4" />
                 </button>
                 <button 
                   type="button"
-                  onClick={() => insertFormatting('bullet')}
+                  onClick={() => handleFormatting('bullet')}
                   className="p-1 hover:bg-gray-100 rounded transition-colors min-w-[24px] text-gray-700"
                   title="Bullet List"
                 >
-                  •
+                  <img src={Icons.bullet} alt="bullet list" className="w-4 h-4" />
                 </button>
                 <button 
                   type="button"
-                  onClick={() => insertFormatting('number')}
+                  onClick={() => handleFormatting('number')}
                   className="p-1 hover:bg-gray-100 rounded transition-colors min-w-[24px] text-gray-700"
                   title="Number List"
                 >
-                  ≡
+                  <img src={Icons.listing} alt="number list" className="w-4 h-4" />
                 </button>
                 <div className="flex-grow"></div>
                 <div className="text-xs text-gray-500">
@@ -262,7 +315,7 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
                 <button
                   type="button"
                   onClick={() => setCategory('Work')}
-                  className={`flex-1 px-4 py-2 text-sm rounded-lg border ${
+                  className={`flex-1 px-4 py-2 text-sm rounded-2xl border ${
                     category === 'Work'
                       ? 'bg-[#7B1984] text-white border-[#7B1984]'
                       : 'border-gray-200 text-gray-700 hover:border-[#7B1984]'
@@ -273,7 +326,7 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
                 <button
                   type="button"
                   onClick={() => setCategory('Personal')}
-                  className={`flex-1 px-4 py-2 text-sm rounded-lg border ${
+                  className={`flex-1 px-4 py-2 text-sm rounded-2xl border ${
                     category === 'Personal'
                       ? 'bg-[#7B1984] text-white border-[#7B1984]'
                       : 'border-gray-200 text-gray-700 hover:border-[#7B1984]'
@@ -358,14 +411,14 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+              className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-2xl hover:bg-gray-50"
             >
               CANCEL
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2 text-sm font-medium text-white bg-[#7B1984] rounded-lg hover:bg-opacity-90 disabled:opacity-50"
+              className="px-6 py-2 text-sm font-medium text-white bg-[#7B1984] rounded-2xl hover:bg-opacity-90 disabled:opacity-50"
             >
               {isSubmitting ? 'CREATING...' : 'CREATE'}
             </button>
