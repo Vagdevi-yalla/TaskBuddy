@@ -10,7 +10,7 @@ interface TaskHeaderProps {
 
 export default function TaskHeader({ viewMode, setViewMode, onLogout }: TaskHeaderProps) {
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+    <div className="bg-white rounded-lg p-4 mb-4">
       <div className="flex justify-between items-center">
         {/* View Toggle */}
         <div className="flex space-x-6">
@@ -37,7 +37,7 @@ export default function TaskHeader({ viewMode, setViewMode, onLogout }: TaskHead
         {/* Logout Button */}
         <button
           onClick={onLogout}
-          className="flex items-center px-3 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-100 transition-colors duration-200"
+          className="flex items-center px-3 py-2 border border-[#7B1984]/15 rounded-md bg-[#FFF9F9] hover:bg-gray-100 transition-colors duration-200"
         >
           <img src={Icons.logout} alt="Logout" className="w-5 h-5 mr-2" />
           <span className="text-sm text-gray-700 font-medium">Logout</span>

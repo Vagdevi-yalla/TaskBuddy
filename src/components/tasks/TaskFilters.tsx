@@ -1,4 +1,5 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import FilterDatePicker from '../common/FilterDatePicker';
 
 interface TaskFiltersProps {
   categoryFilter: string;
@@ -34,28 +35,26 @@ export default function TaskFilters({
             <option value="work">Work</option>
             <option value="personal">Personal</option>
           </select>
-          <div className="flex items-center space-x-2">
-            <input 
-              type="date"
-              value={dueDateFilter}
-              onChange={(e) => setDueDateFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-2xl text-sm bg-white"
+          <div className="w-[150px]">
+            <FilterDatePicker
+              selectedDate={dueDateFilter}
+              onChange={setDueDateFilter}
             />
-            {dueDateFilter && (
-              <button
-                onClick={() => setDueDateFilter('')}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
           </div>
+          {dueDateFilter && (
+            <button
+              onClick={() => setDueDateFilter('')}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
         </div>
 
-        <div className="flex items-center space-x-4">
-          {/* Search */}
+        {/* Search */}
+        <div className="flex items-center gap-4">
           <div className="relative">
             <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input

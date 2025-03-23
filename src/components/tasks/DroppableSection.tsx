@@ -34,9 +34,9 @@ export default function DroppableSection({
   onSelectTask
 }: DroppableSectionProps) {
   return (
-    <div>
+    <div className="overflow-hidden rounded-lg">
       <div 
-        className={`${bgColor} px-6 py-3 rounded-t-lg flex items-center justify-between cursor-pointer`}
+        className={`${bgColor} px-4 py-3 flex items-center justify-between cursor-pointer`}
         onClick={onToggle}
       >
         <div className="flex items-center space-x-2">
@@ -54,20 +54,20 @@ export default function DroppableSection({
         </svg>
       </div>
       {isOpen && (
-        <div className="bg-[#F1F1F1] rounded-b-lg">
+        <div className="bg-[#F1F1F1]">
           <Droppable droppableId={id}>
             {(provided, snapshot) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={`min-h-[100px] transition-all duration-200 p-4 ${
+                className={`transition-all duration-200 ${
                   snapshot.isDraggingOver 
                     ? 'bg-opacity-50 border-2 border-dashed border-gray-300' 
                     : ''
                 }`}
               >
                 {tasks.length === 0 ? (
-                  <div className="text-center text-gray-500 py-8 rounded-lg bg-[#F1F1F1]">
+                  <div className="text-center text-gray-500 py-4">
                     No Tasks {title}
                   </div>
                 ) : (

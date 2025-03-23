@@ -15,6 +15,9 @@ import strikeIcon from "../assets/images/S.svg"
 import listingIcon from "../assets/images/list-numbers.svg"
 import bulletIcon from "../assets/images/list-menu.svg"
 import descriptionIcon from "../assets/images/tasks-list.svg"
+import tickIcon from "../assets/images/checkmark.svg"
+import greenTickIcon from "../assets/images/checkmark-green.svg"
+import logoIcon from "../assets/images/task_icon.svg"
 
 export const Icons = {
   list: listIcon,
@@ -31,6 +34,9 @@ export const Icons = {
   listing: listingIcon,
   bullet: bulletIcon,
   description: descriptionIcon,
+  tick: tickIcon,
+  greenTick: greenTickIcon,
+  logo: logoIcon,
 } as const;
 
 // Logos and other images can be added in similar fashion

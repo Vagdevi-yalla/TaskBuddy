@@ -1,6 +1,7 @@
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
+import { Icons } from '../../assets';
 
 export default function Header() {
   const { user, signOut } = useAuth();
@@ -16,11 +17,16 @@ export default function Header() {
   };
 
   return (
-    <div className="bg-white shadow font-mulish">
+    <div className="bg-white font-mulish">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-between items-center">
-          <Link to="/" className="text-xl font-semibold text-gray-900 hover:text-[#7B1984]">
-            TaskBuddy
+          
+          <Link to="/" className="text-xl font-semibold text-gray-900 hover:text-[#7B1984] flex items-center gap-2">
+            {/* Logo and Title */}
+        <div className="flex items-center gap-2">
+          <img src={Icons.logo} alt="TaskBuddy" className="w-8 h-8" />
+          <span className="text-xl font-semibold text-gray-900">TaskBuddy</span>
+        </div>
           </Link>
 
           <div className="relative group">
