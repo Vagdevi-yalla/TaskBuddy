@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import Tasks from './pages/Tasks';
+import { Tasks } from './pages/Tasks';
 import Login from './pages/Login';
 
 import PrivateRoute from './components/PrivateRoute';
@@ -12,7 +12,7 @@ import { logAnalyticsEvent } from './firebase/config';
 // Layout component for authenticated pages
 const AuthenticatedLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <Header />
       {children}
     </div>
@@ -31,7 +31,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <Router>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AuthProvider>
           <Routes>
             <Route path="/login" element={<Login />} />
