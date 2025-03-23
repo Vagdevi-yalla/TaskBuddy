@@ -54,21 +54,21 @@ export default function DroppableSection({
         </svg>
       </div>
       {isOpen && (
-        <div className="bg-gray-50 rounded-b-lg">
+        <div className="bg-[#F1F1F1] rounded-b-lg">
           <Droppable droppableId={id}>
             {(provided, snapshot) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={`min-h-[100px] transition-all duration-200 ${
+                className={`min-h-[100px] transition-all duration-200 p-4 ${
                   snapshot.isDraggingOver 
                     ? 'bg-opacity-50 border-2 border-dashed border-gray-300' 
                     : ''
                 }`}
               >
                 {tasks.length === 0 ? (
-                  <div className="text-center text-gray-500 py-8 border-2 border-dashed border-gray-200 mx-4 my-4 rounded-lg">
-                    Drop tasks here
+                  <div className="text-center text-gray-500 py-8 rounded-lg bg-[#F1F1F1]">
+                    No Tasks {title}
                   </div>
                 ) : (
                   tasks.map((task, index) => (

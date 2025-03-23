@@ -31,9 +31,9 @@ export default function TaskList({
   return (
     <>
       {/* Column Headers */}
-      <div className="bg-gray-50 rounded-lg mb-4">
-        <div className="grid grid-cols-4 gap-4 px-6 py-3 text-sm font-semibold text-gray-900">
-          <div className="flex items-center ml-11">Task name</div>
+      <div className="bg-white rounded-lg mb-4 border-t border-[#000000]/10">
+        <div className="grid grid-cols-4 gap-4 ml-2 py-2 text-sm font-semibold text-[#000000]/60">
+          <div className="flex items-center">Task name</div>
           <div className="flex items-center justify-start">Due on</div>
           <div className="flex items-center justify-start">Task Status</div>
           <div className="flex items-center justify-start">Task Category</div>

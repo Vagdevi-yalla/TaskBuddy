@@ -9,6 +9,12 @@ import arrowIcon from '../assets/images/arrow.svg';
 import dragIcon from '../assets/images/drag_icon.png';
 
 import calendarIcon from '../assets/images/calendar.svg';
+import boldIcon from "../assets/images/B.svg"
+import italicIcon from "../assets/images/I.svg"
+import strikeIcon from "../assets/images/S.svg"
+import listingIcon from "../assets/images/list-numbers.svg"
+import bulletIcon from "../assets/images/list-menu.svg"
+import descriptionIcon from "../assets/images/tasks-list.svg"
 
 export const Icons = {
   list: listIcon,
@@ -16,11 +22,15 @@ export const Icons = {
   logout: logoutIcon,
   add: addIcon,
   enter: enterIcon,
- 
- 
   drag: dragIcon,
   arrow:arrowIcon,
   calendar: calendarIcon,
+  bold: boldIcon,
+  italic: italicIcon,
+  strike: strikeIcon,
+  listing: listingIcon,
+  bullet: bulletIcon,
+  description: descriptionIcon,
 } as const;
 
 // Logos and other images can be added in similar fashion

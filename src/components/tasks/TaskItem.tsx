@@ -28,7 +28,7 @@ export default function TaskItem({
       <div
         ref={provided.innerRef}
         {...provided.draggableProps}
-        className={`bg-gray-50 border-b border-gray-200 transition-all duration-200 ${
+        className={`bg-[#F1F1F1] border-b border-gray-300 transition-all duration-200 mb-4 ${
           snapshot.isDragging ? 'shadow-lg ring-2 ring-[#7B1984] ring-opacity-50 scale-[1.02]' : ''
         }`}
       >
@@ -58,41 +58,31 @@ export default function TaskItem({
               </div>
             </div>
           </div>
-          <div className="ml-3 flex-grow grid grid-cols-4 gap-4 items-center">
-            <div className="flex items-center">
-              <span className="text-sm font-medium">{task.title}</span>
+          <div className="flex-grow grid grid-cols-4 gap-4 ml-4 mr-6">
+            <div className="text-sm text-gray-900">{task.title}</div>
+            <div className="text-sm text-gray-500">
+              {new Date(task.dueDate).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+              })}
             </div>
-            <div className="flex items-center justify-start">
-              <span className="text-sm text-gray-500">{task.dueDate}</span>
-            </div>
-            <div className="flex items-center justify-start">
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                task.status === 'TO-DO' ? 'bg-gray-100 text-gray-800' :
-                task.status === 'IN-PROGRESS' ? 'bg-blue-100 text-blue-800' :
-                'bg-green-100 text-green-800'
-              }`}>
-                {task.status}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="px-2 py-1 bg-gray-100 rounded-full text-xs font-medium">
-                {task.category}
-              </span>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => onEdit(task)}
-                  className="text-gray-400 hover:text-[#7B1984] p-1"
-                >
-                  <PencilIcon className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => onDelete(task.id)}
-                  className="text-gray-400 hover:text-red-600 p-1"
-                >
-                  <TrashIcon className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
+            <div className="text-sm text-gray-500">{task.status}</div>
+            <div className="text-sm text-gray-500">{task.category}</div>
+          </div>
+          <div className="flex items-center space-x-2 mr-4">
+            <button
+              onClick={() => onEdit(task)}
+              className="text-gray-400 hover:text-[#7B1984]"
+            >
+              <PencilIcon className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => onDelete(task.id)}
+              className="text-gray-400 hover:text-red-600"
+            >
+              <TrashIcon className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </div>
@@ -104,7 +94,7 @@ export default function TaskItem({
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
-      className={`bg-white p-4 rounded-lg shadow-sm mb-3 ${
+      className={`bg-[#F1F1F1] p-4 rounded-lg shadow-sm mb-4 ${
         snapshot.isDragging ? 'shadow-lg ring-2 ring-[#7B1984] ring-opacity-50' : ''
       }`}
     >

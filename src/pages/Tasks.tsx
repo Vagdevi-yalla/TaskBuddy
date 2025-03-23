@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { fetchUserTasks, deleteTask, updateTaskStatus, updateTaskOrders } from '../services/taskService';
 import { Task, TaskStatus } from '../types/Task';
 import TaskForm from '../components/TaskForm';
+import AddTaskModal from '../components/tasks/AddTaskModal';
 import TaskHeader from '../components/tasks/TaskHeader';
 import TaskFilters from '../components/tasks/TaskFilters';
 import TaskList from '../components/tasks/TaskList';
@@ -233,7 +234,17 @@ export default function Tasks() {
           />
         )}
 
-        {showAddTask && (
+        {showAddTask && !editingTask && (
+          <AddTaskModal
+            onClose={() => {
+              setShowAddTask(false);
+              setEditingTask(null);
+            }}
+            onTaskAdded={handleTaskAdded}
+          />
+        )}
+
+        {editingTask && (
           <TaskForm
             onClose={() => {
               setShowAddTask(false);

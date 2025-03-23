@@ -10,7 +10,7 @@ interface TaskHeaderProps {
 
 export default function TaskHeader({ viewMode, setViewMode, onLogout }: TaskHeaderProps) {
   return (
-    <div className="bg-gray-50 rounded-lg p-4 shadow-sm mb-4">
+    <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
       <div className="flex justify-between items-center">
         {/* View Toggle */}
         <div className="flex space-x-6">
