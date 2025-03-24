@@ -1,4 +1,4 @@
-import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { Droppable, Draggable } from '@hello-pangea/dnd';
 import { Task, TaskStatus, TaskCategory } from '../../types/Task';
 import TaskItem from './TaskItem';
 import { useState } from 'react';

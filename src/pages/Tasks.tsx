@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchUserTasks, deleteTask, updateTaskStatus, updateTaskOrders } from '../services/taskService';
 import { Task, TaskStatus } from '../types/Task';
