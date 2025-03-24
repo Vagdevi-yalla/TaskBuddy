@@ -68,7 +68,8 @@ export default function CreateTaskModal({ isOpen, onClose, onSubmit }: CreateTas
       setStatus('TO-DO');
       
       onClose();
-    } catch (err) {
+    } catch (error) {
+      console.error('Error creating task:', error);
       setError('Failed to create task. Please try again.');
     } finally {
       setIsSubmitting(false);

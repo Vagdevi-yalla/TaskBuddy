@@ -22,9 +22,10 @@ class ErrorBoundary extends React.Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log error to Firebase Analytics
-    logAnalyticsEvent('error_boundary_catch', {
-      error: error.toString(),
-      componentStack: errorInfo.componentStack
+    logAnalyticsEvent('error_boundary', {
+      error: error?.toString() || 'Unknown error',
+      componentStack: errorInfo.componentStack || '',
+      global: true
     });
   }
 

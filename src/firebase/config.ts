@@ -1,28 +1,35 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import { getAnalytics, logEvent } from 'firebase/analytics';
+import { getAnalytics, logEvent, AnalyticsCallOptions } from 'firebase/analytics';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBUMu2-SzcUBhxoB35mmIydWZXIua2XgnM",
-  authDomain: "task-buddy-5961b.firebaseapp.com",
-  projectId: "task-buddy-5961b",
-  storageBucket: "task-buddy-5961b.firebasestorage.app",
-  messagingSenderId: "1059418534423",
-  appId: "1:1059418534423:web:3d7133c2770f5ed0fee252",
-  measurementId: "G-7Z9B75YP1S"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 }
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const analytics = getAnalytics(app);
+
+// Initialize Analytics only in browser environment
+export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
 
 // Analytics helper function
-export const logAnalyticsEvent = (eventName: string, eventParams?: Record<string, any>) => {
+export const logAnalyticsEvent = (
+  eventName: string, 
+  eventParams?: { [key: string]: string | number | boolean } & AnalyticsCallOptions
+) => {
   try {
-    logEvent(analytics, eventName, eventParams);
+    if (analytics) {
+      logEvent(analytics, eventName, eventParams);
+    }
   } catch (error) {
     console.error('Analytics error:', error);
   }

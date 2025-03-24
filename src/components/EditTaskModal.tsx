@@ -189,47 +189,46 @@ export default function EditTaskModal({ task, onClose, onTaskUpdated }: EditTask
     }
     
     switch (format) {
-      case 'bold':
+      case 'bold': {
         document.execCommand('bold', false);
         break;
-      case 'italic':
+      }
+      case 'italic': {
         document.execCommand('italic', false);
         break;
-      case 'strike':
+      }
+      case 'strike': {
         document.execCommand('strikeThrough', false);
         break;
-      case 'bullet':
+      }
+      case 'bullet': {
         const parentList = range.commonAncestorContainer.parentElement?.closest('ul, ol');
         if (!parentList) {
-          // Not in a list, create new unordered list
           document.execCommand('insertUnorderedList', false);
         } else if (parentList.tagName === 'OL') {
-          // Convert ordered list to unordered
           const listItems = Array.from(parentList.children);
           const newList = document.createElement('ul');
           listItems.forEach(li => newList.appendChild(li.cloneNode(true)));
           parentList.replaceWith(newList);
         } else {
-          // Toggle existing unordered list
           document.execCommand('insertUnorderedList', false);
         }
         break;
-      case 'number':
+      }
+      case 'number': {
         const parentOList = range.commonAncestorContainer.parentElement?.closest('ul, ol');
         if (!parentOList) {
-          // Not in a list, create new ordered list
           document.execCommand('insertOrderedList', false);
         } else if (parentOList.tagName === 'UL') {
-          // Convert unordered list to ordered
           const listItems = Array.from(parentOList.children);
           const newList = document.createElement('ol');
           listItems.forEach(li => newList.appendChild(li.cloneNode(true)));
           parentOList.replaceWith(newList);
         } else {
-          // Toggle existing ordered list
           document.execCommand('insertOrderedList', false);
         }
         break;
+      }
     }
     
     // Update description state with HTML content
@@ -240,46 +239,38 @@ export default function EditTaskModal({ task, onClose, onTaskUpdated }: EditTask
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate required fields
-    if (!title.trim()) {
-      handleError('Title is required');
-      return;
-    }
-
-    if (!dueDate) {
-      handleError('Due date is required');
-      return;
-    }
-
-    if (!category) {
-      handleError('Category is required');
-      return;
-    }
-
-    if (!status) {
-      handleError('Status is required');
-      return;
-    }
-
     setIsSubmitting(true);
     setError('');
-
+    
     try {
-      await updateTask(task.id, {
+      // Validate required fields
+      if (!title.trim()) {
+        handleError('Title is required');
+        return;
+      }
+
+      if (!dueDate) {
+        handleError('Due date is required');
+        return;
+      }
+
+      const updatedTask = {
+        ...task,
         title: title.trim(),
         description,
         dueDate,
-        category,
         status,
-        completed: status === 'COMPLETED',
+        category,
         attachments,
-        activityLog
-      });
+        activityLog: [...activityLog],
+        lastModified: new Date()
+      };
 
+      await updateTask(task.id, updatedTask);
       onTaskUpdated();
       onClose();
-    } catch (err) {
+    } catch (error) {
+      console.error('Error updating task:', error);
       handleError('Failed to update task. Please try again.');
     } finally {
       setIsSubmitting(false);

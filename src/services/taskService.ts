@@ -44,7 +44,7 @@ setInterval(() => {
 // Add a type converter to handle Firestore document conversion
 const taskConverter: FirestoreDataConverter<Task> = {
   toFirestore(task: Task): DocumentData {
-    const { id, attachments, ...taskData } = task;
+    const { attachments, ...taskData } = task;
     // Convert File objects to storable format
     const attachmentData = attachments?.map(file => ({
       name: file.name,
