@@ -1,16 +1,28 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
-interface FilterDatePickerProps {
+interface RelativeDatePickerProps {
   selectedDate: string;
   onChange: (date: string) => void;
   placeholder?: string;
 }
 
-export default function FilterDatePicker({ selectedDate, onChange, placeholder = 'Add date' }: FilterDatePickerProps) {
+export default function RelativeDatePicker({ selectedDate, onChange, placeholder = 'Add date' }: RelativeDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(selectedDate ? new Date(selectedDate) : new Date());
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen && buttonRef.current && dropdownRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      const isMobile = window.innerWidth < 768;
+
+      if (isMobile) {
+        dropdownRef.current.style.top = `${buttonRect.bottom + window.scrollY + 8}px`;
+      }
+    }
+  }, [isOpen]);
 
   const getDaysInMonth = () => {
     const start = startOfMonth(currentDate);
@@ -26,6 +38,7 @@ export default function FilterDatePicker({ selectedDate, onChange, placeholder =
   return (
     <div className="relative">
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center gap-2 px-3 py-1.5 text-sm rounded-2xl border border-gray-300 bg-white hover:bg-gray-50"
       >
@@ -38,15 +51,16 @@ export default function FilterDatePicker({ selectedDate, onChange, placeholder =
       </button>
       
       {isOpen && (
-        <div className="fixed inset-0 z-[200]" onClick={() => setIsOpen(false)}>
+        <>
+          <div className="fixed inset-0 z-[100]" onClick={() => setIsOpen(false)} />
           <div 
-            className="absolute z-[201] bg-white rounded-2xl shadow-lg border border-gray-200 w-[250px]"
-            style={{ 
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)'
-            }}
+            ref={dropdownRef}
+            className="md:absolute fixed z-[101] md:top-full md:mt-2 md:left-0 left-4 bg-white rounded-2xl shadow-lg border border-gray-200 w-[calc(100vw-2rem)] md:w-[250px]"
             onClick={e => e.stopPropagation()}
+            style={{
+              maxHeight: '80vh',
+              overflowY: 'auto'
+            }}
           >
             <div className="p-3">
               {/* Calendar Header */}
@@ -142,7 +156,7 @@ export default function FilterDatePicker({ selectedDate, onChange, placeholder =
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

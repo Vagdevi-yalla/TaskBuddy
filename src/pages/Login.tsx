@@ -19,30 +19,52 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center bg-white overflow-hidden relative">
-      <div className="container mx-auto relative z-10 pl-8 md:pl-16">
+      {/* Mobile Circles - Only visible on mobile */}
+      <div className="absolute inset-0 md:hidden">
+        {/* Top right circles */}
+        <div className="absolute top-0 right-0 w-[150px] h-[150px] translate-x-1/4 -translate-y-1/4">
+          <div className="absolute inset-0 border border-[#7B1984] border-opacity-40 rounded-full"></div>
+          <div className="absolute inset-[15px] border border-[#7B1984] border-opacity-40 rounded-full"></div>
+          <div className="absolute inset-[30px] border border-[#7B1984] border-opacity-40 rounded-full"></div>
+        </div>
+        
+        {/* Bottom left circles */}
+        <div className="absolute bottom-0 left-0 w-[150px] h-[150px] -translate-x-1/4 translate-y-1/4">
+          <div className="absolute inset-0 border border-[#7B1984] border-opacity-40 rounded-full"></div>
+          <div className="absolute inset-[15px] border border-[#7B1984] border-opacity-40 rounded-full"></div>
+          <div className="absolute inset-[30px] border border-[#7B1984] border-opacity-40 rounded-full"></div>
+        </div>
+        
+        {/* Bottom right circles */}
+        <div className="absolute bottom-0 right-0 w-[120px] h-[120px] translate-x-1/4 translate-y-1/4">
+          <div className="absolute inset-0 border border-[#7B1984] border-opacity-40 rounded-full"></div>
+          <div className="absolute inset-[12px] border border-[#7B1984] border-opacity-40 rounded-full"></div>
+          <div className="absolute inset-[24px] border border-[#7B1984] border-opacity-40 rounded-full"></div>
+        </div>
+      </div>
+
+      <div className="container mx-auto relative z-10 px-6 md:pl-16">
         <div className="flex flex-col md:flex-row items-center justify-between">
           {/* Left column with text content */}
-          <div className="w-full md:w-[440px] flex flex-col items-center md:items-start justify-center space-y-5">
-            <div className="flex items-center space-x-1">
-              <div className="h-[50px] flex items-center">
-                <img
-                  src={taskImg}
-                  alt="TaskBuddy"
-                  className="w-[25px] h-10vh"
-                />
-              </div>
-              <h1 className="text-[#7B1984] font-semibold text-[28px]">
+          <div className="w-full md:w-[440px] flex flex-col items-center md:items-start justify-center space-y-6">
+            <div className="flex items-center gap-2">
+              <img
+                src={taskImg}
+                alt="TaskBuddy"
+                className="w-6 h-6"
+              />
+              <h1 className="text-[#7B1984] font-bold text-[28px]">
                 TaskBuddy
               </h1>
             </div>
             
-            <p className="text-gray-600 text-[15px] font-semibold leading-[1.6] max-w-[360px]">
+            <p className="text-gray-600 text-sm font-semibold leading-[1.4] max-w-[260px] text-center md:text-left px-4 md:px-0">
               Streamline your workflow and track progress effortlessly with our all-in-one task management app.
             </p>
 
             <button
               onClick={handleGoogleSignIn}
-              className="w-full max-w-[400px] h-[52px] bg-black text-white rounded-[20px] hover:bg-black/90 transition-colors duration-200 font-medium text-[17px] flex items-center justify-center"
+              className="w-full max-w-[400px] h-[52px] bg-black text-white rounded-[25px] hover:bg-black/90 transition-colors duration-200 font-medium text-[17px] flex items-center justify-center mt-4"
             >
               <img
                 src={googleLogo}
@@ -51,10 +73,17 @@ export default function Login() {
               />
               Continue with Google
             </button>
+
+            {/* Concentric circles below button - Only visible on mobile */}
+            <div className="relative w-[150px] h-[150px] md:hidden">
+              <div className="absolute inset-0 border border-[#7B1984] border-opacity-40 rounded-full"></div>
+              <div className="absolute inset-[15px] border border-[#7B1984] border-opacity-40 rounded-full"></div>
+              <div className="absolute inset-[30px] border border-[#7B1984] border-opacity-40 rounded-full"></div>
+            </div>
           </div>
 
           {/* Right column for image */}
-          <div className="w-full md:w-1/2 relative mt-16 md:mt-0">
+          <div className="w-full md:w-1/2 relative mt-16 md:mt-0 hidden md:block">
             <div className="relative h-[600px] flex items-center">
               {/* Circles container */}
               <div className="absolute inset-0">

@@ -19,6 +19,7 @@ import tickIcon from "../assets/images/checkmark.svg"
 import greenTickIcon from "../assets/images/checkmark-green.svg"
 import logoIcon from "../assets/images/task_icon.svg"
 import plusIcon from "../assets/images/add_icon.svg"
+import searchIcon from "../assets/images/SearchNotFound.svg"
 
 export const Icons = {
   list: listIcon,
@@ -39,6 +40,7 @@ export const Icons = {
   greenTick: greenTickIcon,
   logo: logoIcon,
   plus: plusIcon,
+  search: searchIcon,
 } as const;
 
 // Logos and other images can be added in similar fashion

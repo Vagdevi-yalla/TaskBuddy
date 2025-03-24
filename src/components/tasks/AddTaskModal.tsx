@@ -214,10 +214,10 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4">
-        <div className="flex justify-between items-center px-6 py-6 border-b-2 border-[#f1f1f1]">
-          <h3 className="text-xl font-semibold text-gray-900 ">Create Task</h3>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start md:items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col">
+        <div className="flex justify-between items-center px-6 py-4 border-b-2 border-[#f1f1f1] flex-shrink-0">
+          <h3 className="text-xl font-semibold text-gray-900">Create Task</h3>
           <button 
             onClick={onClose}
             className="text-black hover:text-gray-700 text-3xl font-bold"
@@ -226,7 +226,7 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-6 py-4">
+        <form onSubmit={handleSubmit} className="px-6 py-4 overflow-y-auto">
           {/* Task Title */}
           <div className="mb-4">
             <input
@@ -305,7 +305,7 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
           </div>
 
           {/* Task Details Row */}
-          <div className="grid grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             {/* Task Category */}
             <div>
               <label className="block text-sm mb-2">

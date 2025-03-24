@@ -32,8 +32,8 @@ export default function TaskList({
 }: TaskListProps) {
   return (
     <>
-      {/* Column Headers */}
-      <div className="bg-white rounded-lg mb-4 border-t border-[#000000]/10">
+      {/* Column Headers - Only visible on desktop */}
+      <div className="hidden md:block bg-white rounded-lg mb-4 border-t border-[#000000]/10">
         <div className="grid grid-cols-[120px_3fr_1.2fr_1.2fr_1.2fr_100px] gap-4 py-2 text-sm font-semibold text-[#000000]/60">
           <div></div>
           <div>Task name</div>
@@ -45,7 +45,7 @@ export default function TaskList({
       </div>
 
       {/* Task Sections */}
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 gap-4">
         <DroppableSection
           id="TO-DO"
           title="Todo"

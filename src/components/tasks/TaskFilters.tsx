@@ -1,5 +1,5 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import FilterDatePicker from '../common/FilterDatePicker';
+import RelativeDatePicker from '../common/RelativeDatePicker';
 
 interface TaskFiltersProps {
   categoryFilter: string;
@@ -22,54 +22,57 @@ export default function TaskFilters({
 }: TaskFiltersProps) {
   return (
     <div className="bg-white rounded-lg p-4 mb-6">
-      <div className="flex items-center justify-between">
+      {/* Mobile Add Task Button - Positioned at top */}
+      <div className="flex md:hidden justify-end mb-4">
+        <button 
+          onClick={onAddTask}
+          className="bg-[#7B1984] text-white px-6 py-2 rounded-2xl text-sm font-medium hover:bg-opacity-90"
+        >
+          ADD TASK
+        </button>
+      </div>
+
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
         {/* Filters */}
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-500">Filter by:</span>
-          <select 
-            className="px-4 py-2 border border-gray-300 rounded-2xl text-sm bg-white"
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-          >
-            <option value="all">All Categories</option>
-            <option value="work">Work</option>
-            <option value="personal">Personal</option>
-          </select>
-          <div className="w-[150px]">
-            <FilterDatePicker
-              selectedDate={dueDateFilter}
-              onChange={setDueDateFilter}
-            />
-          </div>
-          {dueDateFilter && (
-            <button
-              onClick={() => setDueDateFilter('')}
-              className="text-gray-400 hover:text-gray-600"
+        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:items-center md:space-x-2">
+          <span className="text-xs md:text-sm text-gray-500">Filter by:</span>
+          <div className="flex space-x-2">
+            <select 
+              className="flex-1 md:flex-none px-3 py-1 md:px-4 md:py-2 border border-gray-300 rounded-2xl text-xs md:text-sm bg-white"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
+              <option value="all">Category</option>
+              <option value="work">Work</option>
+              <option value="personal">Personal</option>
+            </select>
+            <div className="flex-1 md:w-[150px]">
+              <RelativeDatePicker
+                selectedDate={dueDateFilter}
+                onChange={setDueDateFilter}
+                placeholder="Due Date"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Search */}
+        {/* Search and Desktop Add Task Button */}
         <div className="flex items-center gap-4">
-          <div className="relative">
+          <div className="relative flex-1 md:flex-none">
             <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 pr-4 py-2 w-64 border border-gray-300 rounded-2xl text-sm"
+              className="w-full md:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-2xl text-sm"
             />
           </div>
 
-          {/* Add Task Button */}
+          {/* Desktop Add Task Button */}
           <button 
             onClick={onAddTask}
-            className="bg-[#7B1984] text-white px-6 py-2 rounded-2xl text-sm font-medium hover:bg-opacity-90"
+            className="hidden md:block bg-[#7B1984] text-white px-6 py-2 rounded-2xl text-sm font-medium hover:bg-opacity-90"
           >
             ADD TASK
           </button>

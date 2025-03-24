@@ -30,6 +30,7 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
   const textareaRef = useRef<HTMLDivElement>(null);
   const [activeFormats, setActiveFormats] = useState<Set<string>>(new Set());
   const [activityLog, setActivityLog] = useState<ActivityLog[]>(task.activityLog || []);
+  const [activeTab, setActiveTab] = useState<'details' | 'activity'>('details');
   const descriptionTimeoutRef = useRef<NodeJS.Timeout>();
   const lastDescriptionRef = useRef(description);
 
@@ -282,9 +283,9 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000]">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-[1000px] mx-4 min-h-[500px] max-h-[90vh] flex flex-col overflow-hidden relative">
-        <div className="flex justify-between items-center px-6 py-8 border-b-2 border-[#f1f1f1]">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start md:items-center justify-center z-[1000]">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-[1000px] mx-4 max-h-[90vh] flex flex-col overflow-hidden">
+        <div className="flex justify-between items-center px-6 py-4 border-b-2 border-[#f1f1f1]">
           <h3 className="text-xl font-semibold text-gray-900">Edit Task</h3>
           <button 
             onClick={onClose}
@@ -293,10 +294,36 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
             ×
           </button>
         </div>
+
+        {/* Mobile Tabs */}
+        <div className="flex gap-2 p-4 md:hidden">
+          <button
+            className={`flex-1 py-2 text-sm font-medium rounded-full ${
+              activeTab === 'details'
+                ? 'bg-black text-white'
+                : 'bg-[#F1F1F1] text-gray-600'
+            }`}
+            onClick={() => setActiveTab('details')}
+          >
+            DETAILS
+          </button>
+          <button
+            className={`flex-1 py-2 text-sm font-medium rounded-full ${
+              activeTab === 'activity'
+                ? 'bg-black text-white'
+                : 'bg-[#F1F1F1] text-gray-600'
+            }`}
+            onClick={() => setActiveTab('activity')}
+          >
+            ACTIVITY
+          </button>
+        </div>
         
-        <div className="flex flex-col md:flex-row flex-1 overflow-auto">
+        <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
           {/* Edit Task Section */}
-          <div className="flex-1 p-6 overflow-y-auto">
+          <div className={`flex-1 p-6 overflow-y-auto ${
+            activeTab === 'details' ? 'block' : 'hidden md:block'
+          }`}>
             <form id="edit-task-form" onSubmit={handleSubmit}>
               {/* Task Title */}
               <div className="mb-4">
@@ -379,14 +406,14 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
               </div>
 
               {/* Task Details Row */}
-              <div className="grid grid-cols-3 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 {/* Task Category */}
                 <div>
                   <label className="block text-sm mb-2">
                     Task Category<span className="text-red-500">*</span>
                   </label>
                   <div className="flex gap-2">
-              <button 
+                    <button
                       type="button"
                       onClick={() => {
                         setCategory('Work');
@@ -397,10 +424,10 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
                           ? 'bg-[#7B1984] text-white border-[#7B1984]'
                           : 'border-gray-200 text-gray-700 hover:border-[#7B1984]'
                       }`}
-              >
-                Work
-              </button>
-              <button 
+                    >
+                      Work
+                    </button>
+                    <button
                       type="button"
                       onClick={() => {
                         setCategory('Personal');
@@ -411,25 +438,25 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
                           ? 'bg-[#7B1984] text-white border-[#7B1984]'
                           : 'border-gray-200 text-gray-700 hover:border-[#7B1984]'
                       }`}
-              >
-                Personal
-              </button>
-            </div>
-          </div>
+                    >
+                      Personal
+                    </button>
+                  </div>
+                </div>
 
                 {/* Due Date */}
                 <div>
                   <label className="block text-sm mb-2">
                     Due on<span className="text-red-500">*</span>
                   </label>
-          <DatePicker
+                  <DatePicker
                     selectedDate={dueDate}
                     onChange={(date) => {
                       setDueDate(date);
                       addActivityLog('Updated due date');
                     }}
-          />
-        </div>
+                  />
+                </div>
 
                 {/* Task Status */}
                 <div>
@@ -444,7 +471,7 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
                     }}
                   />
                 </div>
-          </div>
+              </div>
 
               {/* Attachments */}
               <div className="mb-6">
@@ -457,32 +484,13 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
                   multiple
                 />
                 <div
-                  onDragEnter={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setIsDragging(true);
-                  }}
                   onDragOver={(e) => {
                     e.preventDefault();
-                    e.stopPropagation();
                     setIsDragging(true);
                   }}
                   onDragLeave={(e) => {
                     e.preventDefault();
-                    e.stopPropagation();
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    const x = e.clientX;
-                    const y = e.clientY;
-                    
-                    // Only set isDragging to false if we've actually left the drop zone
-                    if (
-                      x <= rect.left ||
-                      x >= rect.right ||
-                      y <= rect.top ||
-                      y >= rect.bottom
-                    ) {
-                      setIsDragging(false);
-                    }
+                    setIsDragging(false);
                   }}
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
@@ -521,10 +529,12 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
           </div>
 
           {/* Activity Section */}
-          <div className="relative w-full md:w-80 bg-gray-50 border-l border-gray-200 overflow-y-auto">
-            <div className="p-6">
+          <div className={`flex-1 md:w-80 bg-gray-50 border-l border-gray-200 ${
+            activeTab === 'activity' ? 'block' : 'hidden md:block'
+          }`}>
+            <div className="h-full p-6 overflow-y-auto">
               <h3 className="text-sm font-medium text-gray-700 mb-4">Activity</h3>
-              <div className="space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto">
+              <div className="space-y-4">
                 {activityLog.map((log, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <span className="text-sm text-gray-700">{log.action}</span>
@@ -538,8 +548,8 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
           </div>
         </div>
 
-        {/* Action Buttons Section */}
-        <div className="flex justify-end gap-3 px-6 py-4 bg-gray-50 mt-auto border-t border-gray-200">
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-200">
           <button
             type="button"
             onClick={onClose}

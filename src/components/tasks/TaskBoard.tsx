@@ -1,6 +1,7 @@
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { Task } from '../../types/Task';
 import TaskItem from './TaskItem';
+import { Icons } from '../../assets';
 
 interface TaskBoardProps {
   todoTasks: Task[];
@@ -17,6 +18,17 @@ export default function TaskBoard({
   onEdit,
   onDelete
 }: TaskBoardProps) {
+  const totalTasks = todoTasks.length + inProgressTasks.length + completedTasks.length;
+
+  if (totalTasks === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16">
+        <img src={Icons.search} alt="No results" className="w-64 h-64 mb-6" />
+        <p className="text-lg text-gray-600">It looks like we can't find any results that match.</p>
+      </div>
+    );
+  }
+
   const renderColumn = (title: string, tasks: Task[], droppableId: string, bgColor: string, accentColor: string) => (
     <div className="bg-[#F1F1F1] rounded-lg">
       <div className={`${bgColor} px-4 py-3 rounded-t-lg`}>
