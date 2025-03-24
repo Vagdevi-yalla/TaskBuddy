@@ -13,7 +13,7 @@ import {
   doc,
   deleteDoc,
   orderBy,
-  Timestamp,
+  
   serverTimestamp,
   writeBatch,
   limit
@@ -301,15 +301,6 @@ export const updateTaskOrders = async (tasks: Task[]): Promise<void> => {
   }
 };
 
-// Add this interface for task updates
-interface TaskUpdate {
-  title: string;
-  dueDate: string;
-  status: TaskStatus;
-  category: TaskCategory;
-  completed: boolean;
-}
-
 export const updateTask = async (
   taskId: string,
   updates: Partial<Task>
@@ -317,7 +308,6 @@ export const updateTask = async (
   try {
     const taskRef = doc(db, COLLECTION_NAME, taskId).withConverter(taskConverter);
     
-    // Ensure we're using the converter to handle the data transformation
     await updateDoc(taskRef, {
       ...updates,
       updatedAt: serverTimestamp()

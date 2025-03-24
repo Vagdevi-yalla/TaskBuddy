@@ -84,15 +84,6 @@ export default function DroppableSection({
     }
   };
 
-  const formatDate = (date: string) => {
-    if (!date) return '';
-    return new Date(date).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
-
   return (
     <div className="overflow-hidden rounded-lg">
       <div 

@@ -21,16 +21,58 @@ export default function CreateTaskModal({ isOpen, onClose, onSubmit }: CreateTas
   const [category, setCategory] = useState<TaskCategory>('Work');
   const [dueDate, setDueDate] = useState('');
   const [status, setStatus] = useState<TaskStatus>('TO-DO');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({
-      title,
-      description,
-      category,
-      dueDate,
-      status
-    });
+    
+    // Validate required fields
+    if (!title.trim()) {
+      setError('Title is required');
+      return;
+    }
+
+    if (!dueDate) {
+      setError('Due date is required');
+      return;
+    }
+
+    if (!category) {
+      setError('Category is required');
+      return;
+    }
+
+    if (!status) {
+      setError('Status is required');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError('');
+
+    try {
+      await onSubmit({
+        title: title.trim(),
+        description,
+        category,
+        dueDate,
+        status
+      });
+      
+      // Reset form
+      setTitle('');
+      setDescription('');
+      setCategory('Work');
+      setDueDate('');
+      setStatus('TO-DO');
+      
+      onClose();
+    } catch (err) {
+      setError('Failed to create task. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -52,6 +94,12 @@ export default function CreateTaskModal({ isOpen, onClose, onSubmit }: CreateTas
           </div>
 
           <form onSubmit={handleSubmit} className="p-4">
+            {error && (
+              <div className="mb-4 p-3 text-sm text-red-600 bg-red-50 rounded-lg">
+                {error}
+              </div>
+            )}
+
             {/* Task Title */}
             <div className="mb-4">
               <input
@@ -150,14 +198,16 @@ export default function CreateTaskModal({ isOpen, onClose, onSubmit }: CreateTas
                 type="button"
                 onClick={onClose}
                 className="px-6 py-2 border border-gray-200 rounded-lg text-sm"
+                disabled={isSubmitting}
               >
                 CANCEL
               </button>
               <button
                 type="submit"
-                className="px-6 py-2 bg-[#7B1984] text-white rounded-lg text-sm"
+                className="px-6 py-2 bg-[#7B1984] text-white rounded-lg text-sm disabled:opacity-50"
+                disabled={isSubmitting}
               >
-                CREATE
+                {isSubmitting ? 'CREATING...' : 'CREATE'}
               </button>
             </div>
           </form>

@@ -4,7 +4,7 @@ import { updateTask } from '../services/taskService';
 import { Icons } from '../assets';
 import DatePicker from './common/DatePicker';
 import StatusDropdown from './common/StatusDropdown';
-import { useAuth } from '../contexts/AuthContext';
+// import { useAuth } from '../contexts/AuthContext';
 
 interface EditTaskModalProps {
   isOpen: boolean;
@@ -14,25 +14,39 @@ interface EditTaskModalProps {
 }
 
 export default function EditTaskModal({ task, onClose, onTaskUpdated }: EditTaskModalProps) {
-  const { user } = useAuth();
+  // const { user } = useAuth();
+  
+  // Form field states
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description || '');
   const [dueDate, setDueDate] = useState(task.dueDate || '');
   const [status, setStatus] = useState<TaskStatus>(task.status);
   const [category, setCategory] = useState<TaskCategory>(task.category);
+  
+  // Form state
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
-  const [charCount, setCharCount] = useState(task.description?.length || 0);
+  const [error, setError] = useState<string>('');
+  // Error handling
+  const handleError = (message: string) => {
+    setError(message);
+    setTimeout(() => setError(''), 5000); // Clear error after 5 seconds
+  };
+  // File handling states
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [attachments, setAttachments] = useState<TaskAttachment[]>(task.attachments || []);
-  const [newFiles, setNewFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  
+  // Description states
+  const [charCount, setCharCount] = useState(task.description?.length || 0);
   const textareaRef = useRef<HTMLDivElement>(null);
-  const [activeFormats, setActiveFormats] = useState<Set<string>>(new Set());
+  
+  // Activity logging
   const [activityLog, setActivityLog] = useState<ActivityLog[]>(task.activityLog || []);
-  const [activeTab, setActiveTab] = useState<'details' | 'activity'>('details');
   const descriptionTimeoutRef = useRef<NodeJS.Timeout>();
   const lastDescriptionRef = useRef(description);
+  
+  // Mobile view state
+  const [activeTab, setActiveTab] = useState<'details' | 'activity'>('details');
 
   // Reset form when task changes
   useEffect(() => {
@@ -42,9 +56,6 @@ export default function EditTaskModal({ task, onClose, onTaskUpdated }: EditTask
     setStatus(task.status);
     setCategory(task.category);
     setCharCount(task.description?.length || 0);
-    setAttachments(task.attachments || []);
-    setNewFiles([]);
-    setActivityLog(task.activityLog || []);
   }, [task]);
 
   // Initialize and update contentEditable div when task changes
@@ -229,8 +240,25 @@ export default function EditTaskModal({ task, onClose, onTaskUpdated }: EditTask
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate required fields
     if (!title.trim()) {
-      setError('Title is required');
+      handleError('Title is required');
+      return;
+    }
+
+    if (!dueDate) {
+      handleError('Due date is required');
+      return;
+    }
+
+    if (!category) {
+      handleError('Category is required');
+      return;
+    }
+
+    if (!status) {
+      handleError('Status is required');
       return;
     }
 
@@ -238,36 +266,21 @@ export default function EditTaskModal({ task, onClose, onTaskUpdated }: EditTask
     setError('');
 
     try {
-      const updates: Partial<Task> = {
-        title,
+      await updateTask(task.id, {
+        title: title.trim(),
         description,
         dueDate,
         category,
         status,
         completed: status === 'COMPLETED',
-        attachments: [...attachments],
+        attachments,
         activityLog
-      };
+      });
 
-      // Handle new files
-      if (newFiles.length > 0) {
-        const newAttachments: TaskAttachment[] = newFiles.map(file => ({
-          name: file.name,
-          type: file.type,
-          size: file.size,
-          lastModified: file.lastModified,
-          path: `/tasks/${task.id}/${file.name}`,
-          uploadedAt: new Date().toISOString()
-        }));
-        updates.attachments = [...attachments, ...newAttachments];
-      }
-
-      await updateTask(task.id, updates);
       onTaskUpdated();
       onClose();
     } catch (err) {
-      console.error('Error updating task:', err);
-      setError('Failed to update task. Please try again.');
+      handleError('Failed to update task. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -294,6 +307,13 @@ export default function EditTaskModal({ task, onClose, onTaskUpdated }: EditTask
             ×
           </button>
         </div>
+
+        {/* Add Error Display */}
+        {error && (
+          <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
 
         {/* Mobile Tabs */}
         <div className="flex gap-2 p-4 md:hidden">
