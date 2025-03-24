@@ -1,4 +1,3 @@
-import { Icons } from '../../assets';
 import { TaskStatus } from '../../types/Task';
 
 interface StatusDropdownProps {

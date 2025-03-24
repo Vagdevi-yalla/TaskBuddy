@@ -1,4 +1,38 @@
-export default function CreateTaskModal({ isOpen, onClose, onSubmit }) {
+import { Dialog } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { useState } from 'react';
+import { TaskStatus, TaskCategory } from '../../types/Task';
+
+interface CreateTaskModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (data: {
+    title: string;
+    description: string;
+    category: TaskCategory;
+    dueDate: string;
+    status: TaskStatus;
+  }) => void;
+}
+
+export default function CreateTaskModal({ isOpen, onClose, onSubmit }: CreateTaskModalProps) {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState<TaskCategory>('Work');
+  const [dueDate, setDueDate] = useState('');
+  const [status, setStatus] = useState<TaskStatus>('TO-DO');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({
+      title,
+      description,
+      category,
+      dueDate,
+      status
+    });
+  };
+
   return (
     <Dialog 
       open={isOpen} 
@@ -93,7 +127,7 @@ export default function CreateTaskModal({ isOpen, onClose, onSubmit }) {
               <select
                 className="w-full p-3 border border-gray-200 rounded-lg text-sm bg-white"
                 value={status}
-                onChange={(e) => setStatus(e.target.value)}
+                onChange={(e) => setStatus(e.target.value as TaskStatus)}
               >
                 <option value="">Choose</option>
                 <option value="TO-DO">To Do</option>

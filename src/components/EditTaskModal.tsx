@@ -13,7 +13,7 @@ interface EditTaskModalProps {
   onTaskUpdated: () => void;
 }
 
-export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: EditTaskModalProps) {
+export default function EditTaskModal({ task, onClose, onTaskUpdated }: EditTaskModalProps) {
   const { user } = useAuth();
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description || '');

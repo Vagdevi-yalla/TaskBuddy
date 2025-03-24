@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 interface FilterDatePickerProps {
   selectedDate: string;

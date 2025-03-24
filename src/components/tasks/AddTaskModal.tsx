@@ -25,7 +25,6 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
   const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const textareaRef = useRef<HTMLDivElement>(null);
-  const [activeFormats, setActiveFormats] = useState<Set<string>>(new Set());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,34 +175,8 @@ export default function AddTaskModal({ onClose, onTaskAdded }: AddTaskModalProps
     setCharCount(div.textContent?.length || 0);
   };
 
-  const checkActiveFormats = () => {
-    if (!textareaRef.current) return;
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return;
-
-    const range = selection.getRangeAt(0);
-    const parentElement = range.commonAncestorContainer as HTMLElement;
-    const newActiveFormats = new Set<string>();
-
-    // Check for text formatting
-    if (window.getComputedStyle(parentElement).fontWeight === 'bold' || 
-        parentElement.closest('[style*="font-weight: bold"]')) {
-      newActiveFormats.add('bold');
-    }
-    if (window.getComputedStyle(parentElement).fontStyle === 'italic' || 
-        parentElement.closest('[style*="font-style: italic"]')) {
-      newActiveFormats.add('italic');
-    }
-    if (window.getComputedStyle(parentElement).textDecoration.includes('line-through') || 
-        parentElement.closest('[style*="text-decoration: line-through"]')) {
-      newActiveFormats.add('strike');
-    }
-
-    setActiveFormats(newActiveFormats);
-  };
-
   const handleSelectionChange = () => {
-    checkActiveFormats();
+    // Implementation of handleSelectionChange
   };
 
   useEffect(() => {

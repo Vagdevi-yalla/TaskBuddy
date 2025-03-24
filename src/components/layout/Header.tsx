@@ -46,6 +46,16 @@ export default function Header() {
               </>
             )}
           </div>
+
+          {/* Sign Out Button */}
+          {user && (
+            <button
+              onClick={handleSignOut}
+              className="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-md text-sm font-medium"
+            >
+              Sign Out
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -31,6 +31,25 @@ export default function DatePicker({ selectedDate, onChange }: DatePickerProps) 
 
   return (
     <div className="relative">
+      <div className="flex items-center justify-between mb-4">
+        <button
+          type="button"
+          onClick={handlePrevMonth}
+          className="p-2 hover:bg-gray-100 rounded-full"
+        >
+          ←
+        </button>
+        <span className="text-lg font-semibold">
+          {format(currentDate, 'MMMM yyyy')}
+        </span>
+        <button
+          type="button"
+          onClick={handleNextMonth}
+          className="p-2 hover:bg-gray-100 rounded-full"
+        >
+          →
+        </button>
+      </div>
       <input
         type="text"
         readOnly
