@@ -18,7 +18,7 @@ export default function TaskBoard({
   onDelete
 }: TaskBoardProps) {
   const renderColumn = (title: string, tasks: Task[], droppableId: string, bgColor: string, accentColor: string) => (
-    <div className="bg-white rounded-lg">
+    <div className="bg-[#F1F1F1] rounded-lg">
       <div className={`${bgColor} px-4 py-3 rounded-t-lg`}>
         <div className="flex items-center">
           <h2 className="text-gray-900 font-semibold">{title}</h2>

@@ -89,19 +89,15 @@ export default function TaskItem({
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
-      className={`bg-[#F1F1F1] p-4 rounded-lg shadow-sm mb-4 ${
+      className={`bg-white p-4 rounded-lg shadow-sm mb-4 ${
         snapshot.isDragging ? 'shadow-lg ring-2 ring-[#7B1984] ring-opacity-50' : ''
       }`}
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center space-x-0">
-          <img src={Icons.drag} alt="drag" className="w-4 h-4" />
-          <img 
-            src={task.status === 'COMPLETED' ? Icons.greenTick : Icons.tick} 
-            alt="status" 
-            className="w-5 h-5" 
-          />
-          <h3 className={`font-medium text-gray-900 ${task.status === 'COMPLETED' ? 'line-through' : ''} -ml-8`}>
+          
+         
+          <h3 className={`font-medium text-gray-900 ${task.status === 'COMPLETED' ? 'line-through' : ''}`}>
             {task.title}
           </h3>
         </div>
