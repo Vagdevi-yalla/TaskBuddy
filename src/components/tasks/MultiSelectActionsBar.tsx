@@ -56,7 +56,7 @@ export default function MultiSelectActionsBar({
                 onStatusUpdate('TO-DO');
                 setShowStatusMenu(false);
               }}
-              className="w-full text-left px-4 py-2 hover:bg-zinc-800 text-sm"
+              className="w-full text-left px-4 py-2 text-sm"
             >
               To Do
             </button>
@@ -65,7 +65,7 @@ export default function MultiSelectActionsBar({
                 onStatusUpdate('IN-PROGRESS');
                 setShowStatusMenu(false);
               }}
-              className="w-full text-left px-4 py-2 hover:bg-zinc-800 text-sm"
+              className="w-full text-left px-4 py-2 text-sm"
             >
               In Progress
             </button>
@@ -74,7 +74,7 @@ export default function MultiSelectActionsBar({
                 onStatusUpdate('COMPLETED');
                 setShowStatusMenu(false);
               }}
-              className="w-full text-left px-4 py-2 hover:bg-zinc-800 text-sm"
+              className="w-full text-left px-4 py-2 text-sm"
             >
               Completed
             </button>

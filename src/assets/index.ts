@@ -18,6 +18,7 @@ import descriptionIcon from "../assets/images/tasks-list.svg"
 import tickIcon from "../assets/images/checkmark.svg"
 import greenTickIcon from "../assets/images/checkmark-green.svg"
 import logoIcon from "../assets/images/task_icon.svg"
+import plusIcon from "../assets/images/add_icon.svg"
 
 export const Icons = {
   list: listIcon,
@@ -37,6 +38,7 @@ export const Icons = {
   tick: tickIcon,
   greenTick: greenTickIcon,
   logo: logoIcon,
+  plus: plusIcon,
 } as const;
 
 // Logos and other images can be added in similar fashion

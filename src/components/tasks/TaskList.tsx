@@ -15,6 +15,7 @@ interface TaskListProps {
   onDelete: (taskId: string) => void;
   selectedTasks: Set<string>;
   onSelectTask: (taskId: string) => void;
+  onTaskAdded: () => void;
 }
 
 export default function TaskList({
@@ -26,7 +27,8 @@ export default function TaskList({
   onEdit,
   onDelete,
   selectedTasks,
-  onSelectTask
+  onSelectTask,
+  onTaskAdded
 }: TaskListProps) {
   return (
     <>
@@ -58,6 +60,7 @@ export default function TaskList({
           onDelete={onDelete}
           selectedTasks={selectedTasks}
           onSelectTask={onSelectTask}
+          onTaskAdded={onTaskAdded}
         />
         <DroppableSection
           id="IN-PROGRESS"
@@ -65,7 +68,7 @@ export default function TaskList({
           tasks={inProgressTasks}
           isOpen={openSections.inProgress}
           onToggle={() => onToggleSection('inProgress')}
-          bgColor="bg-[#99E5FF]"
+          bgColor="bg-[#85D9F1]"
           iconColor="text-[#0C8CE9]"
           count={inProgressTasks.length}
           viewMode="list"
@@ -81,7 +84,7 @@ export default function TaskList({
           isOpen={openSections.completed}
           onToggle={() => onToggleSection('completed')}
           bgColor="bg-[#CEFFCC]"
-          iconColor="text-[#2BA324]"
+          iconColor="text-[#107C41]"
           count={completedTasks.length}
           viewMode="list"
           onEdit={onEdit}

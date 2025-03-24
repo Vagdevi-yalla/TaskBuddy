@@ -94,9 +94,12 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    event.stopPropagation();
     setIsDragging(false);
     
     const droppedFiles = Array.from(event.dataTransfer.files);
+    if (droppedFiles.length === 0) return;
+
     const newAttachments = droppedFiles.map(file => ({
       name: file.name,
       type: file.type,
@@ -454,13 +457,32 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
                   multiple
                 />
                 <div
+                  onDragEnter={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDragging(true);
+                  }}
                   onDragOver={(e) => {
                     e.preventDefault();
+                    e.stopPropagation();
                     setIsDragging(true);
                   }}
                   onDragLeave={(e) => {
                     e.preventDefault();
-                    setIsDragging(false);
+                    e.stopPropagation();
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = e.clientX;
+                    const y = e.clientY;
+                    
+                    // Only set isDragging to false if we've actually left the drop zone
+                    if (
+                      x <= rect.left ||
+                      x >= rect.right ||
+                      y <= rect.top ||
+                      y >= rect.bottom
+                    ) {
+                      setIsDragging(false);
+                    }
                   }}
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
@@ -503,10 +525,7 @@ export default function EditTaskModal({ isOpen, onClose, task, onTaskUpdated }: 
             <div className="p-6">
               <h3 className="text-sm font-medium text-gray-700 mb-4">Activity</h3>
               <div className="space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto">
-                {[
-                  { action: 'Task created', timestamp: task.createdAt },
-                  ...activityLog
-                ].map((log, index) => (
+                {activityLog.map((log, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <span className="text-sm text-gray-700">{log.action}</span>
                     <span className="text-xs text-gray-500">

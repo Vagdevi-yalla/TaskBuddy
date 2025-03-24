@@ -42,9 +42,8 @@ export default function Tasks() {
       return;
     }
     try {
-      console.log('Loading tasks for user:', user.uid);
       const fetchedTasks = await fetchUserTasks(user.uid);
-      console.log('Tasks loaded:', fetchedTasks);
+      console.log('Tasks loaded:', fetchedTasks.length, 'tasks');
       setTasks(fetchedTasks);
     } catch (error) {
       console.error('Error loading tasks:', error);
@@ -53,10 +52,8 @@ export default function Tasks() {
 
   useEffect(() => {
     if (user) {
-      console.log('User changed, loading tasks');
       loadTasks();
     } else {
-      console.log('No user, clearing tasks');
       setTasks([]);
     }
   }, [user, loadTasks]);
@@ -76,9 +73,6 @@ export default function Tasks() {
   };
 
   const handleTaskAdded = async () => {
-    console.log('Task added, refreshing task list');
-    setShowAddTask(false);
-    setEditingTask(null);
     await loadTasks();
   };
 
@@ -223,6 +217,7 @@ export default function Tasks() {
             onDelete={handleDeleteTask}
             selectedTasks={selectedTasks}
             onSelectTask={handleSelectTask}
+            onTaskAdded={loadTasks}
           />
         ) : (
           <TaskBoard
