@@ -332,7 +332,7 @@ export default function EditTaskModal({ task, onClose, onTaskUpdated }: EditTask
         
         <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
           {/* Edit Task Section */}
-          <div className={`flex-1 p-6 overflow-y-auto ${
+          <div className={`flex-[2] p-6 overflow-y-auto ${
             activeTab === 'details' ? 'block' : 'hidden md:block'
           }`}>
             <form id="edit-task-form" onSubmit={handleSubmit}>
@@ -540,7 +540,7 @@ export default function EditTaskModal({ task, onClose, onTaskUpdated }: EditTask
           </div>
 
           {/* Activity Section */}
-          <div className={`flex-1 md:w-80 bg-gray-50 border-l border-gray-200 ${
+          <div className={`w-full md:w-96 bg-gray-50 border-l border-gray-200 ${
             activeTab === 'activity' ? 'block' : 'hidden md:block'
           }`}>
             <div className="h-full p-6 overflow-y-auto">

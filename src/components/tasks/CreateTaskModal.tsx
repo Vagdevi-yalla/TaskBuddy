@@ -2,6 +2,7 @@ import { Dialog } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { TaskStatus, TaskCategory } from '../../types/Task';
+import DatePicker from '../common/DatePicker';
 
 interface CreateTaskModalProps {
   isOpen: boolean;
@@ -77,32 +78,33 @@ export default function CreateTaskModal({ isOpen, onClose, onSubmit }: CreateTas
   };
 
   return (
-    <Dialog 
-      open={isOpen} 
-      onClose={onClose}
-      className="relative z-50"
-    >
+    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-      
+
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="w-full md:w-[600px] bg-white rounded-lg">
-          {/* Header */}
-          <div className="flex justify-between items-center p-4 border-b">
-            <Dialog.Title className="text-xl font-semibold">Create Task</Dialog.Title>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-              <XMarkIcon className="w-6 h-6" />
+        <Dialog.Panel className="mx-auto max-w-lg w-full bg-white rounded-2xl shadow-lg">
+          <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+            <Dialog.Title className="text-xl font-semibold text-gray-900">
+              Create Task
+            </Dialog.Title>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-500"
+            >
+              <XMarkIcon className="h-6 w-6" />
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-4">
-            {error && (
-              <div className="mb-4 p-3 text-sm text-red-600 bg-red-50 rounded-lg">
-                {error}
-              </div>
-            )}
+          {error && (
+            <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
 
+          <form onSubmit={handleSubmit} className="px-6 py-4">
             {/* Task Title */}
             <div className="mb-4">
+              <label className="block text-sm mb-2">Task Title*</label>
               <input
                 type="text"
                 placeholder="Task title"
@@ -161,12 +163,9 @@ export default function CreateTaskModal({ isOpen, onClose, onSubmit }: CreateTas
             {/* Due Date */}
             <div className="mb-4">
               <label className="block text-sm mb-2">Due on*</label>
-              <input
-                type="text"
-                placeholder="DD/MM/YYYY"
-                className="w-full p-3 border border-gray-200 rounded-lg text-sm"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
+              <DatePicker
+                selectedDate={dueDate}
+                onChange={setDueDate}
               />
             </div>
 
@@ -194,19 +193,18 @@ export default function CreateTaskModal({ isOpen, onClose, onSubmit }: CreateTas
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 justify-end">
+            <div className="flex justify-end gap-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-2 border border-gray-200 rounded-lg text-sm"
-                disabled={isSubmitting}
+                className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-2xl hover:bg-gray-50"
               >
                 CANCEL
               </button>
               <button
                 type="submit"
-                className="px-6 py-2 bg-[#7B1984] text-white rounded-lg text-sm disabled:opacity-50"
                 disabled={isSubmitting}
+                className="px-6 py-2 text-sm font-medium text-white bg-[#7B1984] rounded-2xl hover:bg-opacity-90 disabled:opacity-50"
               >
                 {isSubmitting ? 'CREATING...' : 'CREATE'}
               </button>

@@ -1,20 +1,10 @@
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Icons } from '../../assets';
 
 export default function Header() {
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      navigate('/login');
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
+  const { user } = useAuth();
 
   return (
     <div className="bg-[#FAEEFC] md:bg-white font-mulish">
@@ -29,32 +19,17 @@ export default function Header() {
           </Link>
 
           {/* Profile Section */}
-          <div className="flex items-center gap-2">
-            {user?.photoURL ? (
-              <>
-                <img src={user.photoURL} alt="Profile" className="w-8 h-8 rounded-full" />
-                <span className="hidden md:block text-sm text-gray-700">
-                  {user?.displayName || 'User'}
-                </span>
-              </>
-            ) : (
-              <>
-                <UserCircleIcon className="w-8 h-8 text-gray-400" />
-                <span className="hidden md:block text-sm text-gray-700">
-                  {user?.displayName || 'User'}
-                </span>
-              </>
-            )}
-          </div>
-
-          {/* Sign Out Button */}
           {user && (
-            <button
-              onClick={handleSignOut}
-              className="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Sign Out
-            </button>
+            <div className="flex items-center gap-2 px-3 py-2">
+              {user?.photoURL ? (
+                <img src={user.photoURL} alt="Profile" className="w-8 h-8 rounded-full" />
+              ) : (
+                <UserCircleIcon className="w-8 h-8 text-gray-400" />
+              )}
+              <span className="hidden md:block text-sm text-gray-700">
+                {user?.displayName || 'User'}
+              </span>
+            </div>
           )}
         </div>
       </div>
